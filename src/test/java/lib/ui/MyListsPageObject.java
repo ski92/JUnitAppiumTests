@@ -21,15 +21,15 @@ abstract public class MyListsPageObject extends MainPageObject {
   }
 
   private static String getSavedArticleXpathByTitle(String article_title) {
-    return FOLDER_BY_NAME_TPL.replace("{TITLE}", article_title);
+    return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
   }
 
   private static String getRemoveButtonByTitle(String article_title) {
-    return FOLDER_BY_NAME_TPL.replace("{TITLE}", article_title);
+    return REMOVE_FROM_SAVED_BUTTON.replace("{TITLE}", article_title);
   }
 
   private static String getSavedArticleXpathByDescription(String article_subtitle) {
-    return REMOVE_FROM_SAVED_BUTTON.replace("{SUBTITLE}", article_subtitle);
+    return ARTICLE_BY_DESCRIPTION_TPL.replace("{SUBTITLE}", article_subtitle);
   }
 
   public void openFolderByName(String name_of_folder) {
@@ -42,7 +42,7 @@ abstract public class MyListsPageObject extends MainPageObject {
   }
 
   public void waitForTitleToAppearByTitle(String article_title) {
-    String article_xpath = getFolderXpathByName(article_title);
+    String article_xpath = getSavedArticleXpathByTitle(article_title);
     this.waitForElementPresent(
             article_xpath,
             "Cannot find saved article by Xpath",
@@ -62,7 +62,7 @@ abstract public class MyListsPageObject extends MainPageObject {
 
   public void swipeByArticleToDelete(String article_title) {
     this.waitForTitleToAppearByTitle(article_title);
-    String article_xpath = getFolderXpathByName(article_title);
+    String article_xpath = getSavedArticleXpathByTitle(article_title);
 
     if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
       this.swipeElementToLeft(
@@ -76,6 +76,7 @@ abstract public class MyListsPageObject extends MainPageObject {
               "Cannot click button to remove article from saved.",
               10
       );
+      driver.navigate().refresh();
     }
     if (Platform.getInstance().isIOS()) {
       this.clickElementToTheRightUpperCorner(article_xpath, "Cannot find saved article");
@@ -86,7 +87,7 @@ abstract public class MyListsPageObject extends MainPageObject {
   }
 
   public void waitForTitleToDisappearByTitle(String article_title) {
-    String article_xpath = getFolderXpathByName(article_title);
+    String article_xpath = getSavedArticleXpathByTitle(article_title);
     this.waitForElementNotPresent(
             article_xpath,
             "Cannot delete saved article",
