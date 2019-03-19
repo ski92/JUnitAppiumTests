@@ -24,7 +24,7 @@ abstract public class MyListsPageObject extends MainPageObject {
     return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
   }
 
-  private static String getRemoveButtonByTitle(String article_title) {
+  public static String getRemoveButtonByTitle(String article_title) {
     return REMOVE_FROM_SAVED_BUTTON.replace("{TITLE}", article_title);
   }
 

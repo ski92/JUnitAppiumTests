@@ -71,15 +71,29 @@ public class MyListsTests extends CoreTestCase {
 
     SearchPageObject.initSearchInput();
     SearchPageObject.typeSearchLine(FIRST_ARTICLE);
-    SearchPageObject.clickByArticleWithSubstring(FIRST_ARTICLE);
+    SearchPageObject.clickByArticleWithSubstring("arkup language");
 
     ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
     ArticlePageObject.waitForTitleElement();
     String article_title = ArticlePageObject.getArticleTitle();
 
     if (Platform.getInstance().isAndroid()) {
-      ArticlePageObject.addArticleToMyList(FOLDER_FOR_TWO_ARTICLES);
+      ArticlePageObject.addArticleToMyList(NAME_OF_FOLDER);
     } else {
+      ArticlePageObject.addArticlesToMySaved();
+    }
+    if (Platform.getInstance().isMW()) {
+      AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+      Auth.clickAuthButton();
+      Auth.enterLoginData(LOGIN, PASSWORD);
+      Auth.submitForm();
+
+      ArticlePageObject.waitForTitleElement();
+
+      assertEquals("We are not on the same page after login.",
+              article_title,
+              ArticlePageObject.getArticleTitle()
+      );
       ArticlePageObject.addArticlesToMySaved();
     }
 
@@ -87,7 +101,7 @@ public class MyListsTests extends CoreTestCase {
 
     SearchPageObject.initSearchInput();
     SearchPageObject.typeSearchLine(SECOND_ARTICLE);
-    SearchPageObject.clickByArticleWithSubstring(SECOND_ARTICLE);
+    SearchPageObject.clickByArticleWithSubstring("escription of a type of XML");
 
     if (Platform.getInstance().isAndroid()) {
       ArticlePageObject.addArticleToExistingList(FOLDER_FOR_TWO_ARTICLES);
@@ -96,6 +110,7 @@ public class MyListsTests extends CoreTestCase {
     }
 
     NavigationUI NavigationUI = NavigationUIFactory.get(driver);
+    NavigationUI.openNavigation();
     NavigationUI.clickMyList();
 
     MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
@@ -108,7 +123,7 @@ public class MyListsTests extends CoreTestCase {
     MyListsPageObject.waitForTitleToDisappearByTitle(article_title);
 
     assertNotNull(
-            "Cannot find saved article that contains " + SUBTITLE + " in description",
-            MyListsPageObject.getArticleByDescription(SUBTITLE));
+            "Cannot find saved article with name " + SECOND_ARTICLE,
+            MyListsPageObject.getRemoveButtonByTitle(SECOND_ARTICLE));
   }
 }
